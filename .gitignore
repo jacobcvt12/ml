@@ -1,2 +1,5 @@
 # hdf5 files
 *.h5
+
+# PDFs
+*.pdf
