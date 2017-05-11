@@ -17,3 +17,4 @@ script.dir <- dirname(sys.frame(1)$ofile)
 file <- h5file(file.path(script.dir, "..", "..", "data", 
                          "linear-homoscedastic-gaussain.h5"))
 file["data"] <- data
+h5close(file)
