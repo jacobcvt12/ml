@@ -4,17 +4,17 @@ script.dir <- dirname(sys.frame(1)$ofile)
 
 file <- h5file(file.path(script.dir, "..", "..", "data", 
                          "linear-homoscedastic-gaussain.h5"))
-lhg <- file["data"][]
+lhg <- data.frame(file["data"][])
 h5close(file)
 
 file <- h5file(file.path(script.dir, "..", "..", "data", 
                          "linear-polynomial-homoscedastic-gaussain.h5"))
-lphg <- file["data"][]
+lphg <- data.frame(file["data"][])
 h5close(file)
 
 file <- h5file(file.path(script.dir, "..", "..", "data", 
                          "linear-spurious-homoscedastic-gaussain.h5"))
-lshg <- file["data"][]
+lshg <- data.frame(file["data"][])
 h5close(file)
 
 colnames(lhg) <- c("y", paste0("X", 1:(ncol(lhg)-1)))
