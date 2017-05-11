@@ -40,6 +40,7 @@ d <- bind_rows(d, .id="model") %>%
            dataset=unlist(dict2[dataset]),
            model=unlist(dict3[model]))
 
+pdf(file.path(script.dir, "..", "..", "data", "comparison.pdf"))
 ggplot(d, aes(x=model, y=value)) +
     geom_point(aes(colour=model)) +
     xlab("Model") +
@@ -47,3 +48,4 @@ ggplot(d, aes(x=model, y=value)) +
     guides(colour=FALSE) +
     scale_y_log10() + 
     facet_grid(dataset ~ key, scales = "free_y")
+dev.off()
