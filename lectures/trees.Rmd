@@ -1,0 +1,38 @@
+---
+title: "Classification and Regression Trees"
+author: "Jacob Carey"
+date: \today
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+```{r example}
+set.seed(1)
+b <- c(-1, 4, 3)
+n <- 10000
+x <- runif(n, -5, 5)
+f <- cbind(1, x, x ^ 2) %*% b
+y <- rnorm(n, f)
+
+mod.lm <- lm(y ~ x)
+mod.tree <- tree(y ~ x)
+
+pred.lm <- fitted(mod.lm)
+pred.tree <- predict(mod.tree)
+
+d <- data_frame(x=x, 
+                observed=y, 
+                lm=pred.lm, 
+                tree=pred.tree) %>% 
+    gather(key, value, observed:tree)
+
+ggplot(d, aes(x, value)) + 
+    geom_line(aes(colour=key,
+                  linetype=key))
+```
