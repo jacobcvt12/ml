@@ -30,3 +30,27 @@ library(ggplot2)
 - Here $\mu$ indicates the mean and $\sigma^2$ indicates the variance
 - For the binary outcome case, we will denote the outcome as $$y \sim \text{Binomial}(p)$$
 - Here $p$ indicates the probability of observing a "1" and conversely $1-p$ is the probability of observing a "0"
+
+## Multiple observations
+
+- In general, we have more than one observation
+- For the continuous case, we are interested in understanding $y_i \sim \text{Normal}(\mu_i, \sigma^2)$
+- And in the binary case, we are interested in understanding $y_i \sim \text{Binary}(\p_i)$
+
+## Latent function
+
+- We consider $y_i \sim \text{Normal}(f(X_i), \sigma^2)$
+- We seek to understand this latent function to understand the data generating process
+- Aside: we require the latent function to be $f(X_i) = X_i \cdot \beta$ for linear regression
+
+## A note about the variance
+
+- More simply, we typically consider the $\sigma^2$ to be constant across all observations
+- Known as homoscedastic
+- More sophisticated models (which may be considered later) allow for varying $\sigma^2_i$'s
+- Known as heteroscedastic
+
+## Final note
+
+- In many of the machine learning models we investigate, we practically ignore the error terms. 
+- We often limit ourselves to making inference on the latent function $f(X_i)$.
