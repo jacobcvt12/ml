@@ -1,0 +1,32 @@
+---
+title: "Introduction to Machine Learning"
+author: "Jacob Carey"
+date: \today
+output: 
+  beamer_presentation:
+    theme: "Szeged"
+    slide_level: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Background
+
+## Mean/Variance vs Probability
+
+- WLOG we consider the error terms to be either Gaussian or Binomail
+- In other words, we either allow the outcome to be on the $(-\infty, \infty)$ or in ${0, 1}$.
+- For the gaussian errors, we will be interested in the mean (and less so, the variance).
+- For the binomial errors, we will *typically* investigate the **probability** of the outcome (even though we observe the binary outcomes)
+
+## Notation
+
+- For the continuous, unbounded outcome case, we will denote the outcome as $$y \sim \text{Gaussian}(\mu, \sigma^2)$$
+- Here $\mu$ indicates the mean and $\sigma^2$ indicates the variance
+- For the binary outcome case, we will denote the outcome as $$y \sim \text{Binomial}(p)$$
+- Here $p$ indicates the probability of observing a "1" and conversely $1-p$ is the probability of observing a "0"
