@@ -5,6 +5,7 @@ date: \today
 output: 
   beamer_presentation:
     theme: "Szeged"
+    fig_caption: false
     slide_level: 2
 ---
 
@@ -35,7 +36,7 @@ library(ggplot2)
 
 - In general, we have more than one observation
 - For the continuous case, we are interested in understanding $y_i \sim \text{Normal}(\mu_i, \sigma^2)$
-- And in the binary case, we are interested in understanding $y_i \sim \text{Binary}(\p_i)$
+- And in the binary case, we are interested in understanding $y_i \sim \text{Binomial}(p_i)$
 
 ## Latent function
 
@@ -54,3 +55,58 @@ library(ggplot2)
 
 - In many of the machine learning models we investigate, we practically ignore the error terms. 
 - We often limit ourselves to making inference on the latent function $f(X_i)$.
+
+# Training, testing, hyperparameters, and philosophy
+
+## Training/Testing
+
+- For fitting a model, we typically split our data into a *training* and *testing* sets.
+- The model is fit to the training data, and then predictions are made on the testing set
+- This provides us with a "practical" sense of how well our model will perform in making predictions
+- We expect the model to perform better on the training data than the (held out) test data
+- Examining accuracy in the training data only will generally lead us to be overconfident in our model
+
+## Model Selection
+
+- We typically use "Mean Squared Error" (MSE) to calculate accuracy
+- Other measures are available as well
+- The MSE as calculated on the testing is a good method for model selection when prediction accuracy is the primary concern
+- For example, if testing MSE for model 1 is greater than testing MSE for model 2, then model 1 should be used for making predictions
+
+## Hyperparameters
+
+- Many models have so-called "hyperparameters" that do not have a closed form solution or an optimization routine for solving
+- Solution of these parameters is *typically* performed by cross-validation on a grid of values within the training set
+- Suppose that model A has hyperparameter $\eta$ that must be tuned, and we suppose that it can take values of either 0.1 or 0.01.
+- The training data is typically broken further into sub-training and sub-testing sets, and the optimal hyperparameter is chosen based on the sub-testing MSE
+
+## Philosophy
+
+- For now, we will limit ourselves to frequentist models 
+- The "common" techniques in ML our "frequently" frequentist
+- However, Bayesian ML techniques have many advantages, such as a "nicer" method for hyperparameter selection, incorporation of "prior" information, and more sophisticated models that may not exist within a frequentist paradigm
+- Good to be aware of these more advanced approaches, even if we aren't covering them now
+
+# Models
+
+## Important!
+
+> All models are wrong; some are useful
+
+- George Box
+
+## Models intended to be covered
+
+- Boosting/Bagging
+- Ridge Regression/Lasso
+- Support Vector Machines
+- Clustering Techniques
+
+## Models for future consideration
+
+- Neural Networks
+- Bayesian Nonparametrics
+
+## Flexibility vs Interpretability
+
+![ISLR Graph](interpretability-flexibility.png)
