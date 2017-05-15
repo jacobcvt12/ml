@@ -20,6 +20,7 @@ x <- runif(n, -5, 5)
 f <- cbind(1, x, x ^ 2) %*% b
 y <- rnorm(n, f)
 
+library(tree)
 mod.lm <- lm(y ~ x)
 mod.tree <- tree(y ~ x)
 
