@@ -3,3 +3,6 @@
 
 # PDFs
 *.pdf
+
+# vim
+*.swp
