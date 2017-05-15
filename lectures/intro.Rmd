@@ -94,6 +94,8 @@ library(ggplot2)
 > All models are wrong; some are useful
 
 - George Box
+- None of these models will be perfect
+- Instead, we'll discuss them in the context of assumptions, strengths, and weaknesses
 
 ## Models intended to be covered
 
