@@ -14,9 +14,16 @@ knitr::opts_chunk$set(echo = FALSE)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
+theme_set(theme_classic(base_size=20))
 ```
 
 # Background
+
+## What is Machine Learning?
+
+\begin{center}
+\includegraphics{machine_learning}
+\end{center}
 
 ## Mean/Variance vs Probability
 
@@ -24,6 +31,33 @@ library(ggplot2)
 - In other words, we either allow the outcome to be on the $(-\infty, \infty)$ or in ${0, 1}$.
 - For the gaussian errors, we will be interested in the mean (and less so, the variance).
 - For the binomial errors, we will *typically* investigate the **probability** of the outcome (even though we observe the binary outcomes)
+
+## Quick note on Gaussian random variables
+
+```{r gauss}
+x <- seq(-3, 3, length.out = 1000)
+y <- dnorm(x)
+d <- data_frame(x=x, y=y)
+ggplot(d, aes(x, y)) + 
+    geom_line() + 
+    labs(title="Gaussian Probability Density Function",
+         caption="Mean: 0\nVariance 1")
+```
+
+## Quick note on Bernoulli random variables
+
+```{r bernoulli}
+set.seed(1)
+p <- 0.25
+y <- rbinom(1, 1000, p)
+d <- data_frame(x=c("0", "1"), y=c(1000 - y, y))
+ggplot(d, aes(x, y)) + 
+    geom_col(width=0.5) +
+    labs(x="",
+         y="Count",
+         title="Bernoulli Simulations",
+         caption="1,000 Simulations from Bernoulli Random Variable\nProbability of success: 0.25")
+```
 
 ## Notation
 
@@ -35,7 +69,7 @@ library(ggplot2)
 ## Multiple observations
 
 - In general, we have more than one observation
-- For the continuous case, we are interested in understanding $y_i \sim \text{Normal}(\mu_i, \sigma^2)$
+- For the continuous case, we are interested in understanding $y_i \sim \text{Gaussian}(\mu_i, \sigma^2)$
 - And in the binary case, we are interested in understanding $y_i \sim \text{Binomial}(p_i)$
 
 ## Latent function
@@ -43,6 +77,35 @@ library(ggplot2)
 - We consider $y_i \sim \text{Normal}(f(X_i), \sigma^2)$
 - We seek to understand this latent function to understand the data generating process
 - Aside: we require the latent function to be $f(X_i) = X_i \cdot \beta$ for linear regression
+
+## Data Generating Process
+
+- We will typically think of the *data generating process* (DGP) in terms of the latent function
+- For simplicity, most functions will be a polynomial, but I may demonstrate less "nice" latent functions
+- Example: we observe (one dimensional) input $x_i$ and output $y_i$
+- $y_i$ is related to $x_i$ via $$y_i \sim \text{Gaussian}((x_i, x_i^2, x_i^3) \cdot \beta, \sigma^2)$$
+
+## R example of polynomial DGP
+
+```{r dgp, echo=TRUE}
+set.seed(1)
+b <- c(-0.1, 0.4, 0.3, .27) # coefficients
+n <- 500 # number of observations
+x <- runif(n, -5, 5) # simulate random input data
+f <- cbind(1, x, x ^ 2, x ^ 3) %*% b # construct func.
+y <- rnorm(n, f, sqrt(5)) # simulate with variance 5
+```
+
+## Visualization of polynomial DGP
+
+```{r dgp-viz}
+d <- data_frame(x=x, f=f[, 1], y=y)
+ggplot(d, aes(x=x, y=y)) +
+    geom_point(colour="orange", alpha=0.5) +
+    geom_line(aes(y=f), colour="blue", size=1.5) +
+    labs(title="Polynomial Data Generating Process",
+         caption="Observed data as points\nLatent function as line")
+```
 
 ## A note about the variance
 
@@ -104,11 +167,39 @@ library(ggplot2)
 - Support Vector Machines
 - Clustering Techniques
 
-## Models for future consideration
+## Models we probably won't cover
 
 - Neural Networks
 - Bayesian Nonparametrics
+- Natural Language Processing
 
 ## Flexibility vs Interpretability
 
 ![ISLR Graph](interpretability-flexibility.png)
+
+# Technology
+
+## R
+
+- Free and open source statistical programming language
+- Generally up to date with machine learning techniques
+    - For example, random forests were implemented in R ~6 months after initial pape was published. SAS took ~10 years to implement random forests.
+- I will predominantly use R for demonstration and labs
+- Can be installed from [https://www.r-project.org/](https://www.r-project.org/)
+
+## Python
+
+- Another free and open source programming language
+- More general purpose than R
+    - Used in many other settings such as system administration in linux, web development, and security
+- Often faster performance than R
+    - But not as fully featured in terms of statistically driven machine learning techniques
+- Better choice for some machine learning techniques, such as neural networks
+
+## R and Python in harmony
+
+- Often, data science shops will use R to develop and test models in prototyping
+- Problem: you would like to provide a dashboard to a network of hospitals to predict probably of an adverse event for a new patient
+- R could be used to explore/prototype models
+- Python could be used for the production model making predictions/learning from new observations
+
