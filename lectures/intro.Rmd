@@ -25,13 +25,6 @@ theme_set(theme_classic(base_size=20))
 \includegraphics{machine_learning}
 \end{center}
 
-## Mean/Variance vs Probability
-
-- WLOG we consider the error terms to be either Gaussian or Binomail
-- In other words, we either allow the outcome to be on the $(-\infty, \infty)$ or in ${0, 1}$.
-- For the gaussian errors, we will be interested in the mean (and less so, the variance).
-- For the binomial errors, we will *typically* investigate the **probability** of the outcome (even though we observe the binary outcomes)
-
 ## Quick note on Gaussian random variables
 
 ```{r gauss}
@@ -58,6 +51,13 @@ ggplot(d, aes(x, y)) +
          title="Bernoulli Simulations",
          caption="1,000 Simulations from Bernoulli Random Variable\nProbability of success: 0.25")
 ```
+
+## Mean/Variance vs Probability
+
+- WLOG we consider the error terms to be either Gaussian or Bernoulli
+- In other words, we either allow the outcome to be on the $(-\infty, \infty)$ or in ${0, 1}$.
+- For the Gaussian errors, we will be interested in the mean (and less so, the variance).
+- For the Binomial errors, we will *typically* investigate the **probability** of the outcome (even though we observe the binary outcomes)
 
 ## Notation
 
