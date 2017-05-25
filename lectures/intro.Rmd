@@ -2,6 +2,8 @@
 title: "Introduction to Machine Learning"
 author: "Jacob Carey"
 date: \today
+header-includes:
+   - \usepackage{tikzsymbols}
 output: 
   beamer_presentation:
     theme: "Szeged"
@@ -23,13 +25,15 @@ theme_set(theme_classic(base_size=20))
 
 > All models are wrong; some are useful
 
-- None of these models will be perfect
+- None of the models we will investigate will be perfect
 - Instead, we'll discuss them in the context of assumptions, strengths, and weaknesses
 
 ## Models intended to be covered
 
 - Boosting/Bagging
+    - Random Forest
 - Ridge Regression/Lasso
+    - Regularization
 - Support Vector Machines
 - Clustering Techniques
 
@@ -82,9 +86,9 @@ ggplot(d, aes(x, y)) +
 ## Mean/Variance vs Probability
 
 - WLOG we consider the error terms to be either Gaussian or Bernoulli
-- In other words, we either allow the outcome to be on the $(-\infty, \infty)$ or in ${0, 1}$.
-- For the Gaussian errors, we will be interested in the mean (and less so, the variance).
-- For the Binomial errors, we will *typically* investigate the **probability** of the outcome (even though we observe the binary outcomes)
+- Our outcomes will exist in $(-\infty, \infty)$ or in ${0, 1}$.
+- For the Gaussian models, we will be interested in the mean (and less so, the variance).
+- For the Binomial models, we will *typically* investigate the **probability** of the outcome (even though we observe the binary outcomes), although some models only classify
 
 ## Notation
 
@@ -101,16 +105,18 @@ ggplot(d, aes(x, y)) +
 
 ## Latent function
 
-- We consider $y_i \sim \text{Normal}(f(X_i), \sigma^2)$
-- We seek to understand this latent function to understand the data generating process
-- Aside: we require the latent function to be $f(X_i) = X_i \cdot \beta$ for linear regression
+- Consider $y_i \sim \text{Normal}(\mathbf{f(X_i)}, \sigma^2)$
+- Interest is in this *latent function* in order to understand the *data generating process*
+    - Aside: we require the latent function to be $f(X_i) = X_i \cdot \beta$ for linear regression
+- Binary case: $y_i \sim \text{Bernoulli}(\mathbf{f(X_i)})$
 
 ## Data Generating Process
 
-- We will typically think of the *data generating process* (DGP) in terms of the latent function
+- The *data generating process* (DGP) describes how the latent function (and the error terms) "process" the covariates to the output (observed data)
 - For simplicity, most functions will be a polynomial, but I may demonstrate less "nice" latent functions
+    - Aside: nice functions rarely describe a data generating process in practice...
 - Example: we observe (one dimensional) input $x_i$ and output $y_i$
-- $y_i$ is related to $x_i$ via $$y_i \sim \text{Gaussian}((x_i, x_i^2, x_i^3) \cdot \beta, \sigma^2)$$
+- $y_i$ is related to $x_i$ via $$y_i \sim \text{Gaussian}((1, x_i, x_i^2, x_i^3) \cdot \beta, \sigma^2)$$
 
 ## R example of polynomial DGP
 
@@ -136,10 +142,10 @@ ggplot(d, aes(x=x, y=y)) +
 
 ## A note about the variance
 
-- More simply, we typically consider the $\sigma^2$ to be constant across all observations
-- Known as homoscedastic
+- We will consider $\sigma^2$ to be constant across all observations
+    - Known as homoscedastic
 - More sophisticated models (which may be considered later) allow for varying $\sigma^2_i$'s
-- Known as heteroscedastic
+    - Known as heteroscedastic
 
 ## Final note
 
@@ -151,17 +157,17 @@ ggplot(d, aes(x=x, y=y)) +
 ## Training/Testing
 
 - For fitting a model, we typically split our data into a *training* and *testing* sets.
-- The model is fit to the training data, and then predictions are made on the testing set
-- This provides us with a "practical" sense of how well our model will perform in making predictions
+- We fit to the training data, and then predictions are made on the testing set
+    - Provides us with a "practical" sense of how well our model will perform in making predictions on unobserved data
 - We expect the model to perform better on the training data than the (held out) test data
-- Examining accuracy in the training data only will generally lead us to be overconfident in our model
+    - Examining accuracy in the training data only will generally lead us to be *overconfident* in our model (overfitting)
 
 ## Model Selection
 
-- We typically use "Mean Squared Error" (MSE) to calculate accuracy
-- Other measures are available as well
-- The MSE as calculated on the testing is a good method for model selection when prediction accuracy is the primary concern
-- For example, if testing MSE for model 1 is greater than testing MSE for model 2, then model 1 should be used for making predictions
+- We often use "Mean Squared Error" (MSE) to calculate accuracy
+    - Other measures are available as well
+- MSE as calculated on the testing is a good method for model selection when *prediction accuracy is the primary concern*
+    - Example: testing MSE for model 1 is greater than testing MSE for model 2 $\implies$ model 1 should be used for making predictions
 
 ## Hyperparameters
 
@@ -172,10 +178,10 @@ ggplot(d, aes(x=x, y=y)) +
 
 ## Philosophy
 
-- For now, we will limit ourselves to frequentist models 
-- The "common" techniques in ML our "frequently" frequentist
-- However, Bayesian ML techniques have many advantages, such as a "nicer" method for hyperparameter selection, incorporation of "prior" information, and more sophisticated models that may not exist within a frequentist paradigm
-- Good to be aware of these more advanced approaches, even if we aren't covering them now
+- We will limit ourselves to frequentist models $\Sadey$
+    - The "common" techniques in ML our "frequently" frequentist
+- Bayesian ML techniques have many advantages, such as a "nicer" method for hyperparameter selection, incorporation of "prior" information, and more sophisticated models that may not exist within a frequentist paradigm
+    - Good to be aware of these more advanced approaches, even if we aren't covering them now
 
 # Technology
 
