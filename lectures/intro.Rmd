@@ -189,7 +189,7 @@ ggplot(d, aes(x=x, y=y)) +
 
 - Free and open source statistical programming language
 - Generally up to date with machine learning techniques
-    - For example, random forests were implemented in R ~6 months after initial pape was published. SAS took ~10 years to implement random forests.
+    - For example, random forests were implemented in R ~6 months after initial paper was published. SAS took ~10 years to implement random forests.
 - I will predominantly use R for demonstration and labs
 - Can be installed from [https://www.r-project.org/](https://www.r-project.org/)
 
@@ -209,3 +209,7 @@ ggplot(d, aes(x=x, y=y)) +
 - R could be used to explore/prototype models
 - Python could be used for the production model making predictions/learning from new observations
 
+## Questions?
+
+Interesting application of machine learning
+[https://youtu.be/qv6UVOQ0F44](https://youtu.be/qv6UVOQ0F44)
