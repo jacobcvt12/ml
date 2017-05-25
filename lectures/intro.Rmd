@@ -17,6 +17,33 @@ library(ggplot2)
 theme_set(theme_classic(base_size=20))
 ```
 
+# Models
+
+## Important!
+
+> All models are wrong; some are useful
+
+- None of these models will be perfect
+- Instead, we'll discuss them in the context of assumptions, strengths, and weaknesses
+
+## Models intended to be covered
+
+- Boosting/Bagging
+- Ridge Regression/Lasso
+- Support Vector Machines
+- Clustering Techniques
+
+## Models we probably won't cover
+
+- Neural Networks
+- Bayesian Nonparametrics
+- Natural Language Processing
+
+## Flexibility vs Interpretability
+
+![ISLR Graph](interpretability-flexibility.png)
+
+
 # Background
 
 ## What is Machine Learning?
@@ -149,32 +176,6 @@ ggplot(d, aes(x=x, y=y)) +
 - The "common" techniques in ML our "frequently" frequentist
 - However, Bayesian ML techniques have many advantages, such as a "nicer" method for hyperparameter selection, incorporation of "prior" information, and more sophisticated models that may not exist within a frequentist paradigm
 - Good to be aware of these more advanced approaches, even if we aren't covering them now
-
-# Models
-
-## Important!
-
-> All models are wrong; some are useful
-
-- None of these models will be perfect
-- Instead, we'll discuss them in the context of assumptions, strengths, and weaknesses
-
-## Models intended to be covered
-
-- Boosting/Bagging
-- Ridge Regression/Lasso
-- Support Vector Machines
-- Clustering Techniques
-
-## Models we probably won't cover
-
-- Neural Networks
-- Bayesian Nonparametrics
-- Natural Language Processing
-
-## Flexibility vs Interpretability
-
-![ISLR Graph](interpretability-flexibility.png)
 
 # Technology
 
