@@ -178,10 +178,10 @@ ggplot(d, aes(x=x, y=y)) +
 
 ## Philosophy
 
-- We will limit ourselves to frequentist models $\Sadey$
-    - The "common" techniques in ML our "frequently" frequentist
-- Bayesian ML techniques have many advantages, such as a "nicer" method for hyperparameter selection, incorporation of "prior" information, and more sophisticated models that may not exist within a frequentist paradigm
-    - Good to be aware of these more advanced approaches, even if we aren't covering them now
+- We will limit ourselves to frequentist models
+    - Many "common" techniques in ML our frequentist
+- Bayesian ML techniques have many advantages, such as a "nicer" method for hyperparameter selection, incorporation of "prior" information, and flexible models that may not exist within a frequentist paradigm
+    - Good to be aware of alternative approaches, even if we aren't covering them now
 
 # Technology
 
@@ -204,7 +204,7 @@ ggplot(d, aes(x=x, y=y)) +
 
 ## R and Python in harmony
 
-- Often, data science shops will use R to develop and test models in prototyping
+- Often, data scientists use R to prototype/explore multiple models and Python to implement the "best" model in production
 - Problem: you would like to provide a dashboard to a network of hospitals to predict probably of an adverse event for a new patient
 - R could be used to explore/prototype models
 - Python could be used for the production model making predictions/learning from new observations
