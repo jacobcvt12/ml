@@ -21,7 +21,7 @@ theme_set(theme_classic(base_size=20))
 
 # Models
 
-## Important!
+## Notes
 
 > All models are wrong; some are useful
 
