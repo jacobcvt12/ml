@@ -34,6 +34,7 @@ theme_set(theme_classic(base_size=20))
     - Random Forest
 - Ridge Regression/Lasso
     - Regularization
+- Generalized Additive Models
 - Support Vector Machines
 - Clustering Techniques
 
