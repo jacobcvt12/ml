@@ -85,23 +85,23 @@ ggplot(d, aes(x, y)) +
 
 ## Mean/Variance vs Probability
 
-- WLOG we consider the error terms to be either Gaussian or Bernoulli
+- We will consider the error terms to be either Gaussian or Bernoulli
 - Our outcomes will exist in $(-\infty, \infty)$ or in ${0, 1}$.
 - For the Gaussian models, we will be interested in the mean (and less so, the variance).
-- For the Binomial models, we will *typically* investigate the **probability** of the outcome (even though we observe the binary outcomes), although some models only classify
+- For the Bernoulli models, we will *typically* investigate the **probability** of the outcome (even though we observe the binary outcomes), although some models only classify
 
 ## Notation
 
 - For the continuous, unbounded outcome case, we will denote the outcome as $$y \sim \text{Gaussian}(\mu, \sigma^2)$$
 - Here $\mu$ indicates the mean and $\sigma^2$ indicates the variance
-- For the binary outcome case, we will denote the outcome as $$y \sim \text{Binomial}(p)$$
+- For the binary outcome case, we will denote the outcome as $$y \sim \text{Bernoulli}(p)$$
 - Here $p$ indicates the probability of observing a "1" and conversely $1-p$ is the probability of observing a "0"
 
 ## Multiple observations
 
 - In general, we have more than one observation
 - For the continuous case, we are interested in understanding $y_i \sim \text{Gaussian}(\mu_i, \sigma^2)$
-- And in the binary case, we are interested in understanding $y_i \sim \text{Binomial}(p_i)$
+- And in the binary case, we are interested in understanding $y_i \sim \text{Bernoulli}(p_i)$
 
 ## Latent function
 
