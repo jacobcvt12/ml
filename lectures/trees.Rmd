@@ -114,3 +114,9 @@ ggplot(d, aes(x, value)) +
     geom_line(aes(colour=key,
                   linetype=key))
 ```
+
+## Tuning
+
+```{r tuning}
+cv.mod <- cv.tree(mod.tree)
+```
