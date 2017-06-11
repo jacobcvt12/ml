@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = FALSE)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
+theme_set(theme_classic(base_size=20))
 ```
 
 # Revisiting the Polynomial DGP
@@ -34,10 +35,10 @@ ggplot(d, aes(x=x, y=y)) +
 
 ```{r fitting, echo=TRUE}
 set.seed(1)
-b <- c(-0.1, 0.4, 0.3, .27) # coefficients
+b <- c(-0.1, 0.4, 0.3, .27, 0.51) # coefficients
 n <- 500 # number of observations
 x <- runif(n, -5, 5) # simulate random input data
-f <- cbind(1, x, x ^ 2, x ^ 3) %*% b # construct func.
+f <- cbind(1, x, x ^ 2, x ^ 3, x ^ 4) %*% b # func.
 y <- rnorm(n, f, sqrt(5)) # simulate with variance 5
 
 library(tree)
@@ -100,4 +101,26 @@ ggplot(d, aes(x=x, y=y)) +
     geom_line(aes(y=f), colour="blue", size=1.5) +
     labs(title="Deep Neural Network Data Generating Process",
          caption="Observed data as points\nLatent function as line")
+```
+
+# Compare RT and LM on NN Latent Function
+
+```{r fitting-nn}
+mod.lm <- lm(y ~ x)
+mod.tree <- tree(y ~ x)
+
+pred.lm <- fitted(mod.lm)
+pred.tree <- predict(mod.tree)
+
+d1 <- data_frame(x=x, 
+                 lm=pred.lm, 
+                 tree=pred.tree) %>% 
+    gather(key, value, lm:tree)
+
+ggplot(d1, aes(x, value)) + 
+    geom_line(aes(colour=key,
+                  linetype=key),
+              size=1.3) +
+    geom_point(data=d, colour="orange", alpha=0.5, aes(y=y)) + 
+    geom_line(data=d, colour="blue", size=1.5, aes(y=f))
 ```
