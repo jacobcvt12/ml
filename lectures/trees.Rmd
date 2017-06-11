@@ -16,6 +16,7 @@ knitr::opts_chunk$set(echo = FALSE)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
+theme_set(theme_classic(base_size=20))
 ```
 
 # Reminders
@@ -30,11 +31,11 @@ library(ggplot2)
 
 ```{r dgp, echo=TRUE}
 set.seed(1)
-b <- c(-1, 4, 3) # coefficients
-n <- 1000 # number of observations
+b <- c(-0.1, 0.4, 0.3, .27, 0.51, 0.17) # coefficients
+n <- 500 # number of observations
 x <- runif(n, -5, 5) # simulate random input data
-f <- cbind(1, x, x ^ 2) %*% b # construct func.
-y <- rnorm(n, f) # simulate with variance 5
+f <- cbind(1, x, x ^ 2, x ^ 3, x ^ 4, x ^ 5) %*% b # func.
+y <- rnorm(n, f, sqrt(5)) # simulate with variance 5
 ```
 
 ## Visualization of polynomial DGP
@@ -120,4 +121,66 @@ ggplot(d, aes(x, value)) +
 ```{r tuning}
 cv.mod <- cv.tree(mod.tree)
 plot(cv.mod$size, cv.mod$dev)
+```
+
+## Complicated Latent Function
+
+```{r nn}
+set.seed(1)
+sigmoid <- function(z) {
+    return(1 / (1 + exp(-z)))
+}
+std <- 1.1
+
+sizes <- c(1, rep(100, 100), 1)
+num.layers <- length(sizes)
+biases <- lapply(sizes[2:length(sizes)], rnorm, sd=std)
+weights <- apply(cbind(sizes[1:(num.layers-1)], sizes[2:num.layers]), 1,
+                 function(x) matrix(rnorm(x[2] * x[1], sd=std), x[2], x[1]))
+
+feedforward <- function(a, biases, weights) {
+    for (layer in mapply(list, biases, weights, SIMPLIFY=FALSE)) {
+        b <- layer[[1]]
+        w <- layer[[2]]
+        
+        a <- sigmoid(w %*% a + b)
+    }
+    
+    return(a)
+}
+
+f <- sapply(x, feedforward, biases, weights)
+f <- log(f / (1 - f))
+y <- rnorm(n, f, 0.15)
+d <- data_frame(x=x, 
+                f=f,
+                y=y) 
+
+ggplot(d, aes(x=x, y=y)) +
+    geom_point(colour="orange", alpha=0.5) +
+    geom_line(aes(y=f), colour="blue", size=1.5) +
+    labs(title="Deep Neural Network Data Generating Process",
+         caption="Observed data as points\nLatent function as line")
+```
+
+# Compare RT and LM on NN Latent Function
+
+```{r fitting-nn}
+mod.lm <- lm(y ~ x)
+mod.tree <- tree(y ~ x)
+
+pred.lm <- fitted(mod.lm)
+pred.tree <- predict(mod.tree)
+
+d1 <- data_frame(x=x, 
+                 lm=pred.lm, 
+                 tree=pred.tree) %>% 
+    gather(key, value, lm:tree)
+
+ggplot(d1, aes(x, value)) + 
+    geom_line(aes(colour=key,
+                  linetype=key),
+              size=1.3) +
+    geom_point(data=d, colour="orange", alpha=0.5, aes(y=y)) + 
+    geom_line(data=d, colour="blue", size=1.5, aes(y=f))
 ```
