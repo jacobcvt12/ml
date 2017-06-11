@@ -2,7 +2,13 @@
 title: "Classification and Regression Trees"
 author: "Jacob Carey"
 date: \today
-output: beamer_presentation
+header-includes:
+   - \usepackage{subfigure}
+output: 
+  beamer_presentation:
+    theme: "Szeged"
+    fig_caption: false
+    slide_level: 2
 ---
 
 ```{r setup, include=FALSE}
@@ -12,18 +18,63 @@ library(tidyr)
 library(ggplot2)
 ```
 
-```{r example}
-set.seed(1)
-b <- c(-1, 4, 3)
-n <- 10000
-x <- runif(n, -5, 5)
-f <- cbind(1, x, x ^ 2) %*% b
-y <- rnorm(n, f)
+# Reminders
 
+## Latent function
+
+- Consider $y_i \sim \text{Normal}(\mathbf{f(X_i)}, \sigma^2)$
+- Interest is in this *latent function* in order to understand the *data generating process*
+    - Aside: we require the latent function to be $f(X_i) = X_i \cdot \beta$ for linear regression
+
+## R example of polynomial DGP
+
+```{r dgp, echo=TRUE}
+set.seed(1)
+b <- c(-1, 4, 3) # coefficients
+n <- 1000 # number of observations
+x <- runif(n, -5, 5) # simulate random input data
+f <- cbind(1, x, x ^ 2) %*% b # construct func.
+y <- rnorm(n, f) # simulate with variance 5
+```
+
+## Visualization of polynomial DGP
+
+```{r dgp-viz}
+d <- data_frame(x=x, f=f[, 1], y=y)
+ggplot(d, aes(x=x, y=y)) +
+    geom_point(colour="orange", alpha=0.5) +
+    geom_line(aes(y=f), colour="blue", size=1.5) +
+    labs(title="Polynomial Data Generating Process",
+         caption="Observed data as points\nLatent function as line")
+```
+
+# CART
+
+## Terminology
+
+```{r term-example}
 library(tree)
 mod.lm <- lm(y ~ x)
 mod.tree <- tree(y ~ x)
 
+plot(mod.tree)
+text(mod.tree, pretty=0)
+```
+
+## Partition
+
+\begin{figure}
+\hfill
+\subfigure{\includegraphics[width=5cm]{hitter-tree.png}}
+\hfill
+\subfigure{\includegraphics[width=5cm]{partition.png}}
+\hfill
+\caption{Predicting Log Baseball Salary}
+\end{figure}
+
+## Prediction
+
+```{r  example}
 pred.lm <- fitted(mod.lm)
 pred.tree <- predict(mod.tree)
 
