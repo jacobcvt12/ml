@@ -119,4 +119,5 @@ ggplot(d, aes(x, value)) +
 
 ```{r tuning}
 cv.mod <- cv.tree(mod.tree)
+plot(cv.mod$size, cv.mod$dev)
 ```
