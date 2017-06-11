@@ -31,11 +31,11 @@ theme_set(theme_classic(base_size=20))
 
 ```{r dgp, echo=TRUE}
 set.seed(1)
-b <- c(-0.1, 0.4, 0.3, .27, 0.51, 0.17) # coefficients
+b <- c(-0.1, 0.4, 0.3, .27, 0.51) # coefficients
 n <- 500 # number of observations
 x <- runif(n, -5, 5) # simulate random input data
-f <- cbind(1, x, x ^ 2, x ^ 3, x ^ 4, x ^ 5) %*% b # func.
-y <- rnorm(n, f, sqrt(5)) # simulate with variance 5
+f <- cbind(1, x, x ^ 2, x ^ 3, x ^ 4) %*% b # func.
+y <- rnorm(n, f, sqrt(200)) # simulate with variance 200
 ```
 
 ## Visualization of polynomial DGP
@@ -163,7 +163,7 @@ ggplot(d, aes(x=x, y=y)) +
          caption="Observed data as points\nLatent function as line")
 ```
 
-# Compare RT and LM on NN Latent Function
+## Compare RT and LM on NN Latent Function
 
 ```{r fitting-nn}
 mod.lm <- lm(y ~ x)
