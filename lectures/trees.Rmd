@@ -88,6 +88,19 @@ text(mod.tree, pretty=0)
 - Resulting subtree will have less variance at the cost of some bias
     - Aside: the number of terminal nodes is a hyperparameter in CART
 
+## Latent functions again
+
+>- Consider $y_i \sim \text{Normal}(\mathbf{f(X_i)}, \sigma^2)$
+>- We require the latent function to be $f(X_i) = X_i \cdot \beta$ for linear regression
+>- Latent function for regression tree is $f(X_i) = \sum_{j=1}^J c_j \cdot 1_{(X_i \in R_j)}
+
+## Final Notes
+
+>- CART is our first example of a *non-linear* model
+>- Even easier to explain/interpret than linear regression
+>- Easy to overfit, espeically without tuning
+>- However, CART is the basis for many ensemble models
+
 # Examples
 
 ## Training
@@ -120,7 +133,12 @@ ggplot(d, aes(x, value)) +
 
 ```{r tuning}
 cv.mod <- cv.tree(mod.tree)
-plot(cv.mod$size, cv.mod$dev)
+cv.data <- data.frame(size=cv.mod$size,
+                      dev=cv.mod$dev)
+ggplot(cv.data, aes(x=size, y=dev)) +
+    geom_point() +
+    xlab("Terminal Nodes") +
+    ylab("Deviance")
 ```
 
 ## Complicated Latent Function
