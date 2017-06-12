@@ -62,6 +62,10 @@ plot(mod.tree)
 text(mod.tree, pretty=0)
 ```
 
+## Classification Tree
+
+![Classification Tree](class-tree.png)
+
 ## Partitions
 
 \begin{figure}
@@ -70,7 +74,6 @@ text(mod.tree, pretty=0)
 \hfill
 \subfigure{\includegraphics[width=5cm]{partition.png}}
 \hfill
-\caption{Predicting Log Baseball Salary}
 \end{figure}
 
 ## Algorithm
