@@ -92,7 +92,7 @@ text(mod.tree, pretty=0)
 
 >- Consider $y_i \sim \text{Normal}(\mathbf{f(X_i)}, \sigma^2)$
 >- We require the latent function to be $f(X_i) = X_i \cdot \beta$ for linear regression
->- Latent function for regression tree is $f(X_i) = \sum_{j=1}^J c_j \cdot 1_{(X_i \in R_j)}
+>- Latent function for regression tree is $f(X_i) = \sum_{j=1}^J c_j \cdot 1_{(X_i \in R_j)}$
 
 ## Final Notes
 
