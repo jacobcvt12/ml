@@ -103,6 +103,7 @@ text(mod.tree, pretty=0)
 >- Even easier to explain/interpret than linear regression
 >- Easy to overfit, espeically without tuning
 >- However, CART is the basis for many ensemble models
+>- Can be extended in other ways as well
 
 # Examples
 
