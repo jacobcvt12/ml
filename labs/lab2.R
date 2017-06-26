@@ -49,6 +49,26 @@ logit.prob <- predict(logit, test, type="response")
 logit.pred <- ifelse(logit.prob < 0.5, "No", "Yes")
 table(logit.pred, test$High)
 
+# now let's overfit a classification tree
+# see confusion matrix for previous model
+table(predict(class, type="class"), Carseats[train, ]$High)
+# fit tree that grows until perfect fit on training data
+class <- tree(High ~ ., data=Carseats, subset=train, 
+              control=tree.control(200, minsize=2, mindev=0))
+# see "perfect" training data confusion matrix
+table(predict(class, type="class"), Carseats[train, ]$High)
+plot(class)
+text(class)
+table(predict(class, test, type="class"), test$High)
+cv.class <- cv.tree(class, FUN=prune.misclass)
+plot(cv.class$size, cv.class$dev)
+data.frame(size=cv.class$size,
+           deviance=cv.class$dev)
+prune.class <- prune.misclass(class, best=20) # change this number!!
+plot(prune.class)
+text(prune.class)
+table(predict(prune.class, test, type="class"), test$High)
+
 # fit a regression tree
 head(Boston) # inspect dataset
 help(Boston) # get dataset documentation
