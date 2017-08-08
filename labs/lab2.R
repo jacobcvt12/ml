@@ -39,7 +39,7 @@ plot(cv.class$size, cv.class$dev)
 data.frame(size=cv.class$size,
            deviance=cv.class$dev)
 
-prune.class <- prune.misclass(class, best=20) # change this number!!
+prune.class <- prune.misclass(class, best=4) # change this number!!
 
 # check predictions on testing data
 table(predict(class, test, type="class"), test$High)
@@ -93,7 +93,7 @@ plot(cv.regress$size, cv.regress$dev)
 data.frame(size=cv.regress$size,
            deviance=cv.regress$dev)
 
-prune.regress <- prune.tree(regress, best=7) # change this number!!
+prune.regress <- prune.tree(regress, best=8) # change this number!!
 
 # check mean squared error of three models
 yhat.tree <- predict(regress, test)
