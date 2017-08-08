@@ -102,4 +102,147 @@ plot(1:n, sigma2.n)
 
 ## Bagging
 
-- If we have $B$ separate training sets, we could calculate $f_1(x), ..., f_B(x)$ and average them to obtain a single low-variance model $f_{\text{avg}}(x) = \frac{1}{B} \sum f_b(x)$
+>- If we have $B$ separate training sets, we could calculate $f_1(x), ..., f_B(x)$ and average them to obtain a single low-variance model $f_{\text{avg}}(x) = \frac{1}{B} \sum f_b(x)$
+>- However, we normally don't have the large number of training sets required
+>- Instead, we can *bootstrap* the observations
+>- We sample (with replacement) from the training set, apply a function $f$ and take the mean
+>- Called "bootstrap aggregation" or "bagging"
+
+## Bagging with CART
+
+- We can consider a setting where $f$ represents a classification or regression tree with a fixed number of terminal nodes
+- In the above problem, I stated that "bootstrapping" provides a way for us to reduce *variance* of a tree without adding much *bias*
+- Here we do *not* prune the trees
+    - Instead, we run many bagged trees of varying depth and compare an error measure (e.g. RMSE or Accuracy)
+
+## Random Forests
+
+- Random Forests are a variation on bagged trees
+- In random forests, at every split in the tree, we only allow a subset $m$ of the $p$ covariates to be considered for splitting
+- This *decorrelates* the trees, improving performance
+- If we let $m=p$, we are back at bagged trees
+- Recommendation is $m=p/3$ for regression and $m=\sqrt{p}$ for classification
+
+## Number of trees (repeated samples)
+
+- In both bagging and random forests, we must choose the number of repeated samples (or trees)
+- We can increase the number of trees to diminishing returns
+- Many different recommendations on the number of trees to try
+    - R defaults to 1,000
+    - Python (scikit-learn) defaults to 10
+
+## Computational issues with random forests
+
+- Individual trees fit in roughly the same order of magnitude of time as a linear model
+- However, when fitting 500 trees on a large dataset, runtime can be long
+- Solution: parallelize!
+
+# Examples
+
+## Training
+```{r dgp-2}
+set.seed(1)
+b <- c(-0.1, 0.4, 0.3, .27, 0.51) # coefficients
+n <- 500 # number of observations
+x <- runif(n, -5, 5) # simulate random input data
+f <- cbind(1, x, x ^ 2, x ^ 3, x ^ 4) %*% b # func.
+y <- rnorm(n, f, sqrt(200)) # simulate with variance 200
+
+training <- sample(0:1, n, TRUE, prob=c(0.3, 0.7))
+
+d <- data.frame(x[training == 0], y[training == 0])
+names(d) <- c("x", "y")
+```
+
+```{r training, echo=TRUE}
+library(tree); library(randomForest)
+
+mod.tree <- tree(y ~ x, subset=(training == 1))
+mod.lm <- lm(y ~ x, subset=(training == 1))
+mod.rf <- randomForest(y ~ x, subset=(training == 1),
+                       ntree=500, maxnodes=32)
+
+pred.tree <- predict(mod.tree, d)
+pred.lm <- predict(mod.lm, d)
+pred.rf <- predict(mod.rf, d)
+```
+
+## Prediction
+
+```{r example}
+d <- data_frame(x=d$x, 
+                func=f[training == 0], 
+                tree=pred.tree,
+                lm=pred.lm,
+                rf=pred.rf) %>%
+    gather(key, value, func:rf)
+
+ggplot(d, aes(x, value)) + 
+    geom_line(aes(colour=key,
+                  linetype=key))
+```
+
+## Complicated Latent Function
+
+```{r nn}
+set.seed(1)
+sigmoid <- function(z) {
+    return(1 / (1 + exp(-z)))
+}
+std <- 1.1
+
+sizes <- c(1, rep(100, 100), 1)
+num.layers <- length(sizes)
+biases <- lapply(sizes[2:length(sizes)], rnorm, sd=std)
+weights <- apply(cbind(sizes[1:(num.layers-1)], sizes[2:num.layers]), 1,
+                 function(x) matrix(rnorm(x[2] * x[1], sd=std), x[2], x[1]))
+
+feedforward <- function(a, biases, weights) {
+    for (layer in mapply(list, biases, weights, SIMPLIFY=FALSE)) {
+        b <- layer[[1]]
+        w <- layer[[2]]
+        
+        a <- sigmoid(w %*% a + b)
+    }
+    
+    return(a)
+}
+
+f <- sapply(x, feedforward, biases, weights)
+f <- log(f / (1 - f))
+y <- rnorm(n, f, 0.15)
+d <- data_frame(x=x, 
+                f=f,
+                y=y) 
+
+ggplot(d, aes(x=x, y=y)) +
+    geom_point(colour="orange", alpha=0.5) +
+    geom_line(aes(y=f), colour="blue", size=1.5) +
+    labs(title="Deep Neural Network Data Generating Process",
+         caption="Observed data as points\nLatent function as line")
+```
+
+## Compare RT, RF, and LM on NN Latent Function
+
+```{r fitting-nn}
+mod.lm <- lm(y ~ x)
+mod.tree <- tree(y ~ x) # should be tuned
+mod.rf <- randomForest(y ~ x) # should be tuned
+
+pred.lm <- fitted(mod.lm)
+pred.tree <- predict(mod.tree)
+pred.rf <- predict(mod.rf)
+
+d1 <- data_frame(x=x, 
+                 lm=pred.lm, 
+                 tree=pred.tree,
+                 rf=pred.rf) %>% 
+    gather(key, value, lm:rf)
+
+ggplot(d1, aes(x, value)) + 
+    geom_line(aes(colour=key,
+                  linetype=key),
+              size=1.3) +
+    geom_point(data=d, colour="orange", alpha=0.5, aes(y=y)) + 
+    geom_line(data=d, colour="blue", size=1.5, aes(y=f))
+```
