@@ -1,0 +1,105 @@
+---
+title: "Bootstraps and Bagging and Forests (Oh my!)"
+author: "Jacob Carey"
+date: \today
+header-includes:
+   - \usepackage{subfigure}
+output: 
+  beamer_presentation:
+    theme: "Szeged"
+    fig_caption: false
+    slide_level: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+theme_set(theme_classic(base_size=20))
+```
+
+# Reminders
+
+## Latent function
+
+- Consider $y_i \sim \text{Normal}(\mathbf{f(X_i)}, \sigma^2)$
+- Interest is in this *latent function* in order to understand the *data generating process*
+    - Aside: we require the latent function to be $f(X_i) = X_i \cdot \beta$ for linear regression
+
+## R example of polynomial DGP
+
+```{r dgp, echo=TRUE}
+set.seed(1)
+b <- c(-0.1, 0.4, 0.3, .27, 0.51) # coefficients
+n <- 500 # number of observations
+x <- runif(n, -5, 5) # simulate random input data
+f <- cbind(1, x, x ^ 2, x ^ 3, x ^ 4) %*% b # func.
+y <- rnorm(n, f, sqrt(200)) # simulate with variance 200
+```
+
+## Visualization of polynomial DGP
+
+```{r dgp-viz}
+d <- data_frame(x=x, f=f[, 1], y=y)
+ggplot(d, aes(x=x, y=y)) +
+    geom_point(colour="orange", alpha=0.5) +
+    geom_line(aes(y=f), colour="blue", size=1.5) +
+    labs(title="Polynomial Data Generating Process",
+         caption="Observed data as points\nLatent function as line")
+```
+
+## Regression Tree
+
+```{r term-example, warning=FALSE}
+library(tree)
+tree.default <- tree(y ~ x)
+
+plot(tree.default)
+text(tree.default, pretty=0)
+```
+
+## Regression Tree - Bias vs Variance
+
+```{r bias-var-tree, warning=FALSE}
+tree.overfit <- tree(y ~ x, control=tree.control(nobs=n, mindev=0, minsize=2))
+
+pred.default <- predict(tree.default)
+pred.overfit <- predict(tree.overfit)
+
+d2 <- data_frame(x=x, default=pred.default, overfit=pred.overfit, func=f[, 1]) %>% 
+    gather(key, value, default:func)
+
+ggplot(d2, aes(x=x, y=value)) +
+    geom_line(aes(colour=key, linetype=key)) +
+    labs(title="Comparison of Regression Trees")
+```
+
+# Bagging
+
+## Bias vs Variance - an idea
+
+>- Starting from the overfit tree, we can decrease the variance, but at the cost of bias
+>- How can we decrease variance (propensity to overfit) without increasing bias (propensity to underfit)?
+>- We can use *bootstrapping* to decrease variance without adding much bias
+
+## Variance
+
+- Suppose we have $n$ independent observations $Z_1, ..., Z_n$ each with variance $\sigma^2$. 
+- The variance of the mean $\bar{Z}$ of the observations is given by $\sigma^2/n$.
+- Implication: averaging a set of observations reduces variance as the number of observations goes up.
+
+## Visualization of variance of mean
+
+```{r variance}
+n <- 100
+
+x <- rnorm(n, 4.1, 5.0)
+sigma2.n <- 5.0 / 1:n
+
+plot(1:n, sigma2.n)
+```
+
+## Bagging
+
+- If we have $B$ separate training sets, we could calculate $f_1(x), ..., f_B(x)$ and average them to obtain a single low-variance model $f_{\text{avg}}(x) = \frac{1}{B} \sum f_b(x)$
